@@ -3,5 +3,14 @@
 version = 3
 
 [[package]]
+name = "lex"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4d4ce0b341b0dae2c8da07432a149136dc87d71dc1c3780d3863c81f922d65ae"
+
+[[package]]
 name = "udyr"
 version = "0.1.0"
+dependencies = [
+ "lex",
+]
