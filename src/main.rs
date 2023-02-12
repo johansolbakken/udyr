@@ -2,8 +2,29 @@ use std::env;
 use std::io;
 use std::io::Write;
 
-fn run(line: &String) {
-    println!("{}", line)
+use token::Token;
+use token::TokenType;
+mod error;
+mod scanner;
+mod token;
+
+#[derive(Debug, Clone)]
+struct RunError {
+    messages: Vec<String>,
+}
+
+fn run(source: &String) -> Result<(), RunError> {
+    let mut scanner = scanner::Scanner::new(source);
+    /*let tokens = scanner.scanTokens();
+
+    tokens.foreach(|token, iter| {
+        println!("{:?}", token);
+    });*/
+
+    let token = Token::new(TokenType::AND, source, source, 1);
+    println!("{:?}", token);
+
+    Ok(())
 }
 
 fn run_file(path: &String) {
