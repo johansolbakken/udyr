@@ -10,6 +10,14 @@ pub struct Scanner {
     line: usize,
 }
 
+fn is_digit(c: char) -> bool {
+    return c >= '0' && c <= '9';
+}
+
+fn is_alpha(c: char) -> bool {
+    return true;
+}
+
 impl Scanner {
     pub fn new(source: &String) -> Scanner {
         return Scanner {
@@ -96,12 +104,20 @@ impl Scanner {
                 }
             }
 
+            // Whitespace
             ' ' | '\r' | '\t' => {}
             '\n' => self.line += 1,
 
+            // Strings
             '"' => self.string(),
 
-            _ => self.errors.push(error(self.line, "Unexpected character.")),
+            _ => {
+                if is_digit(c) {
+                    self.number();
+                } else {
+                    self.errors.push(error(self.line, "Unexpected character."));
+                }
+            }
         }
     }
 
@@ -132,10 +148,17 @@ impl Scanner {
     }
 
     fn peek(&self) -> char {
-        if (self.is_at_end()) {
+        if self.is_at_end() {
             return '\0';
         }
         return self.source.chars().nth(self.current).unwrap();
+    }
+
+    fn peek_next(&self) -> char {
+        if (self.current + 1 >= self.source.len()) {
+            return '\0';
+        }
+        return self.source.chars().nth(self.current + 1).unwrap();
     }
 
     fn string(&mut self) {
@@ -152,6 +175,25 @@ impl Scanner {
 
         let value = String::from(&self.source[self.start + 1..self.current - 1]);
         self.add_token(TokenType::STRING, &value);
+    }
+
+    fn number(&mut self) {
+        while is_digit(self.peek()) {
+            self.advance();
+        }
+
+        if self.peek() == '.' && is_digit(self.peek_next()) {
+            self.advance(); // Consume the .
+
+            while is_digit(self.peek()) {
+                self.advance();
+            }
+        }
+
+        self.add_token(
+            TokenType::NUMBER,
+            &String::from(&self.source[self.start..self.current]),
+        )
     }
 }
 
@@ -247,6 +289,19 @@ mod tests {
         assert_eq!(tokens.len(), 4);
         assert_eq!((&tokens[1]).literal, "Hello");
         assert_eq!((&tokens[3]).literal, "Hello2");
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_numbers() -> Result<(), String> {
+        let mut scanner = Scanner::new(&String::from("123+123.123"));
+        let tokens = scanner.scan_tokens().unwrap();
+
+        assert_eq!(tokens.len(), 3);
+        assert_eq!((&tokens[0]).literal, "123");
+        assert_eq!((&tokens[1]).Type, TokenType::Plus);
+        assert_eq!((&tokens[2]).literal, "123.123");
 
         Ok(())
     }
