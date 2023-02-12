@@ -15,14 +15,11 @@ struct RunError {
 
 fn run(source: &String) -> Result<(), RunError> {
     let mut scanner = scanner::Scanner::new(source);
-    /*let tokens = scanner.scanTokens();
+    let tokens = scanner.scan_tokens().unwrap();
 
-    tokens.foreach(|token, iter| {
+    for token in tokens {
         println!("{:?}", token);
-    });*/
-
-    let token = Token::new(TokenType::AND, source, source, 1);
-    println!("{:?}", token);
+    }
 
     Ok(())
 }

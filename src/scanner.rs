@@ -348,6 +348,7 @@ mod tests {
         let tokens = scanner.scan_tokens().unwrap();
 
         assert_eq!(tokens.len(), 4);
+        assert_eq!((&tokens[1]).Type, TokenType::STRING);
         assert_eq!((&tokens[1]).literal, "Hello");
         assert_eq!((&tokens[3]).literal, "Hello2");
 
