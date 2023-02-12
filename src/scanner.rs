@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::error::error;
 use crate::token::{Token, TokenType};
 
@@ -5,6 +7,7 @@ pub struct Scanner {
     source: String,
     tokens: Vec<Token>,
     errors: Vec<String>,
+    keywords: HashMap<String, TokenType>,
     start: usize,
     current: usize,
     line: usize,
@@ -15,19 +18,61 @@ fn is_digit(c: char) -> bool {
 }
 
 fn is_alpha(c: char) -> bool {
-    return true;
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
+}
+
+fn is_alpha_numeric(c: char) -> bool {
+    return is_digit(c) || is_alpha(c);
 }
 
 impl Scanner {
     pub fn new(source: &String) -> Scanner {
-        return Scanner {
+        let mut scanner = Scanner {
             source: source.clone(),
             tokens: Vec::new(),
             errors: Vec::new(),
+            keywords: HashMap::new(),
             start: 0,
             current: 0,
             line: 1,
         };
+
+        scanner.keywords.insert(String::from("and"), TokenType::AND);
+        scanner
+            .keywords
+            .insert(String::from("class"), TokenType::CLASS);
+        scanner
+            .keywords
+            .insert(String::from("else"), TokenType::ELSE);
+        scanner
+            .keywords
+            .insert(String::from("false"), TokenType::FALSE);
+        scanner.keywords.insert(String::from("for"), TokenType::FOR);
+        scanner.keywords.insert(String::from("fun"), TokenType::FUN);
+        scanner.keywords.insert(String::from("if"), TokenType::IF);
+        scanner.keywords.insert(String::from("nil"), TokenType::NIL);
+        scanner.keywords.insert(String::from("or"), TokenType::OR);
+        scanner
+            .keywords
+            .insert(String::from("print"), TokenType::PRINT);
+        scanner
+            .keywords
+            .insert(String::from("return"), TokenType::RETURN);
+        scanner
+            .keywords
+            .insert(String::from("super"), TokenType::SUPER);
+        scanner
+            .keywords
+            .insert(String::from("this"), TokenType::THIS);
+        scanner
+            .keywords
+            .insert(String::from("true"), TokenType::TRUE);
+        scanner.keywords.insert(String::from("var"), TokenType::VAR);
+        scanner
+            .keywords
+            .insert(String::from("while"), TokenType::WHILE);
+
+        return scanner;
     }
 
     pub fn scan_tokens(&mut self) -> Result<Vec<Token>, ()> {
@@ -114,6 +159,8 @@ impl Scanner {
             _ => {
                 if is_digit(c) {
                     self.number();
+                } else if is_alpha(c) {
+                    self.identifier();
                 } else {
                     self.errors.push(error(self.line, "Unexpected character."));
                 }
@@ -194,6 +241,20 @@ impl Scanner {
             TokenType::NUMBER,
             &String::from(&self.source[self.start..self.current]),
         )
+    }
+
+    fn identifier(&mut self) {
+        while is_alpha_numeric(self.peek()) {
+            self.advance();
+        }
+
+        let text = String::from(&self.source[self.start..self.current]);
+        let mut Type = TokenType::IDENTIFIER;
+        if self.keywords.contains_key(&text) {
+            Type = self.keywords.get(&text).unwrap().clone();
+        }
+
+        self.add_empty_token(Type);
     }
 }
 
@@ -302,6 +363,26 @@ mod tests {
         assert_eq!((&tokens[0]).literal, "123");
         assert_eq!((&tokens[1]).Type, TokenType::Plus);
         assert_eq!((&tokens[2]).literal, "123.123");
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_identifier() -> Result<(), String> {
+        let mut scanner =
+            Scanner::new(&String::from("var + myClass - class + superFres // var \n"));
+        let tokens = scanner.scan_tokens().unwrap();
+
+        assert_eq!(tokens.len(), 7);
+        assert_eq!((&tokens[0]).Type, TokenType::VAR);
+        assert_eq!((&tokens[1]).Type, TokenType::Plus);
+        assert_eq!((&tokens[2]).Type, TokenType::IDENTIFIER);
+        assert_eq!((&tokens[2]).lexeme, "myClass");
+        assert_eq!((&tokens[3]).Type, TokenType::Minus);
+        assert_eq!((&tokens[4]).Type, TokenType::CLASS);
+        assert_eq!((&tokens[5]).Type, TokenType::Plus);
+        assert_eq!((&tokens[6]).Type, TokenType::IDENTIFIER);
+        assert_eq!((&tokens[6]).lexeme, "superFres");
 
         Ok(())
     }
