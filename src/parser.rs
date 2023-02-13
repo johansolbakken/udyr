@@ -1,6 +1,7 @@
 use crate::token::{self, TokenType};
 use std::rc::Rc;
 
+#[derive(Debug, PartialEq, Clone)]
 pub enum NodeType {
     Program,
     Expression,
@@ -197,5 +198,68 @@ impl Parser {
             }
             _ => Err(String::from("")),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::scanner;
+
+    use super::*;
+
+    #[test]
+    fn test_literal_true() -> Result<(), String> {
+        let mut scanner = scanner::Scanner::new(&String::from("true"));
+        let tokens = scanner.scan_tokens().unwrap();
+        let mut parser = Parser::new(&tokens);
+
+        let node = parser.parse_literal().unwrap();
+        assert_eq!(node.Type, NodeType::Literal);
+        assert_eq!(node.children.len(), 0);
+        assert_eq!(node.token.Type, TokenType::TRUE);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_literal_nil() -> Result<(), String> {
+        let mut scanner = scanner::Scanner::new(&String::from("nil"));
+        let tokens = scanner.scan_tokens().unwrap();
+        let mut parser = Parser::new(&tokens);
+
+        let node = parser.parse_literal().unwrap();
+        assert_eq!(node.Type, NodeType::Literal);
+        assert_eq!(node.children.len(), 0);
+        assert_eq!(node.token.Type, TokenType::NIL);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_literal_num() -> Result<(), String> {
+        let mut scanner = scanner::Scanner::new(&String::from("123"));
+        let tokens = scanner.scan_tokens().unwrap();
+        let mut parser = Parser::new(&tokens);
+
+        let node = parser.parse_literal().unwrap();
+        assert_eq!(node.Type, NodeType::Literal);
+        assert_eq!(node.children.len(), 0);
+        assert_eq!(node.token.Type, TokenType::NUMBER);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_literal_string() -> Result<(), String> {
+        let mut scanner = scanner::Scanner::new(&String::from("\"123\""));
+        let tokens = scanner.scan_tokens().unwrap();
+        let mut parser = Parser::new(&tokens);
+
+        let node = parser.parse_literal().unwrap();
+        assert_eq!(node.Type, NodeType::Literal);
+        assert_eq!(node.children.len(), 0);
+        assert_eq!(node.token.Type, TokenType::STRING);
+
+        Ok(())
     }
 }
