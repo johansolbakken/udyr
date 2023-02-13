@@ -6,8 +6,8 @@ use std::rc::Rc;
 
 #[derive(Debug)]
 pub struct Parser {
-    tokens: Vec<token::Token>,
-    current: usize,
+    pub(crate) tokens: Vec<token::Token>,
+    pub(crate) current: usize,
 }
 
 impl Parser {
@@ -19,33 +19,42 @@ impl Parser {
     }
 
     pub fn parse(&mut self) -> Rc<Node> {
+        println!("Parser::Parse");
         let expr = self.parse_exspression();
         let root = Rc::new(Node::new(NodeType::Program, &[expr.unwrap()]));
         return root;
     }
 
     pub fn parse_exspression(&mut self) -> Result<Rc<Node>, String> {
-        let group = self.parse_grouping();
-        match group {
+        println!("Parser::Expression");
+
+        let literal = self.parse_literal();
+        match literal {
             Ok(node) => return Ok(Rc::new(Node::new(NodeType::Expression, &[node]))),
             Err(err) => { /* Do nothing */ }
         }
 
-        let binary = self.parse_binary();
-        match binary {
+        let group = self.parse_grouping();
+        match group {
             Ok(node) => return Ok(Rc::new(Node::new(NodeType::Expression, &[node]))),
-            Err(err) => { /* Do nothing */ }
+            Err(err) => {
+                /* Do nothing */
+                println!("GrouError");
+            }
         }
 
         let unary = self.parse_unary();
         match unary {
             Ok(node) => return Ok(Rc::new(Node::new(NodeType::Expression, &[node]))),
-            Err(err) => { /* Do nothing */ }
+            Err(err) => {
+                /* Do nothing */
+                println!("BinaryError");
+            }
         }
 
-        let literal = self.parse_literal();
-        match literal {
-            Ok(node) => Ok(Rc::new(Node::new(NodeType::Expression, &[node]))),
+        let binary = self.parse_binary();
+        match binary {
+            Ok(node) => return Ok(Rc::new(Node::new(NodeType::Expression, &[node]))),
             Err(err) => Err(err),
         }
     }
@@ -301,6 +310,8 @@ mod tests {
         let mut parser = Parser::new(&tokens);
 
         let node_minus = parser.parse_unary().unwrap();
+        assert_eq!(node_minus.node_type, NodeType::Unary);
+        assert_eq!(node_minus.token.token_type, TokenType::Minus);
 
         Ok(())
     }

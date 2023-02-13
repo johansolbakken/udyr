@@ -16,10 +16,9 @@ struct RunError {
 fn run(source: &String) -> Result<(), RunError> {
     let mut scanner = scanner::Scanner::new(source);
     let tokens = scanner.scan_tokens().unwrap();
+    let mut parser = parser::Parser::new(&tokens);
 
-    for token in tokens {
-        println!("{:?}", token);
-    }
+    let program = parser.parse();
 
     Ok(())
 }
