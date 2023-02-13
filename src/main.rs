@@ -3,10 +3,10 @@ use std::io;
 use std::io::Write;
 
 mod error;
+mod node;
+mod parser;
 mod scanner;
 mod token;
-mod parser;
-mod node;
 
 #[derive(Debug, Clone)]
 struct RunError {

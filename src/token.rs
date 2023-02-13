@@ -50,6 +50,12 @@ pub enum TokenType {
     None,
 }
 
+impl Default for TokenType {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct Token {
     pub(crate) token_type: TokenType,
