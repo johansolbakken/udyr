@@ -1,6 +1,10 @@
-use crate::token::{self, TokenType};
+use crate::{
+    node::{Node, NodeType},
+    token::{self, TokenType},
+};
 use std::rc::Rc;
 
+#[derive(Debug)]
 pub struct Parser {
     tokens: Vec<token::Token>,
     current: usize,
@@ -181,9 +185,9 @@ mod tests {
         let mut parser = Parser::new(&tokens);
 
         let node = parser.parse_literal().unwrap();
-        assert_eq!(node.Type, NodeType::Literal);
+        assert_eq!(node.node_type, NodeType::Literal);
         assert_eq!(node.children.len(), 0);
-        assert_eq!(node.token.Type, TokenType::TRUE);
+        assert_eq!(node.token.token_type, TokenType::TRUE);
 
         Ok(())
     }
@@ -195,9 +199,9 @@ mod tests {
         let mut parser = Parser::new(&tokens);
 
         let node = parser.parse_literal().unwrap();
-        assert_eq!(node.Type, NodeType::Literal);
+        assert_eq!(node.node_type, NodeType::Literal);
         assert_eq!(node.children.len(), 0);
-        assert_eq!(node.token.Type, TokenType::NIL);
+        assert_eq!(node.token.token_type, TokenType::NIL);
 
         Ok(())
     }
@@ -209,9 +213,9 @@ mod tests {
         let mut parser = Parser::new(&tokens);
 
         let node = parser.parse_literal().unwrap();
-        assert_eq!(node.Type, NodeType::Literal);
+        assert_eq!(node.node_type, NodeType::Literal);
         assert_eq!(node.children.len(), 0);
-        assert_eq!(node.token.Type, TokenType::NUMBER);
+        assert_eq!(node.token.token_type, TokenType::NUMBER);
 
         Ok(())
     }
@@ -223,9 +227,9 @@ mod tests {
         let mut parser = Parser::new(&tokens);
 
         let node = parser.parse_literal().unwrap();
-        assert_eq!(node.Type, NodeType::Literal);
+        assert_eq!(node.node_type, NodeType::Literal);
         assert_eq!(node.children.len(), 0);
-        assert_eq!(node.token.Type, TokenType::STRING);
+        assert_eq!(node.token.token_type, TokenType::STRING);
 
         Ok(())
     }
@@ -237,54 +241,54 @@ mod tests {
         let mut parser = Parser::new(&tokens);
 
         let node_equal_equal = parser.parse_operator().unwrap();
-        assert_eq!(node_equal_equal.Type, NodeType::Operator);
+        assert_eq!(node_equal_equal.node_type, NodeType::Operator);
         assert_eq!(node_equal_equal.children.len(), 0);
-        assert_eq!(node_equal_equal.token.Type, TokenType::EqualEqual);
+        assert_eq!(node_equal_equal.token.token_type, TokenType::EqualEqual);
 
         let node_bang_equal = parser.parse_operator().unwrap();
-        assert_eq!(node_bang_equal.Type, NodeType::Operator);
+        assert_eq!(node_bang_equal.node_type, NodeType::Operator);
         assert_eq!(node_bang_equal.children.len(), 0);
-        assert_eq!(node_bang_equal.token.Type, TokenType::BangEqual);
+        assert_eq!(node_bang_equal.token.token_type, TokenType::BangEqual);
 
         let node_less = parser.parse_operator().unwrap();
-        assert_eq!(node_less.Type, NodeType::Operator);
+        assert_eq!(node_less.node_type, NodeType::Operator);
         assert_eq!(node_less.children.len(), 0);
-        assert_eq!(node_less.token.Type, TokenType::LESS);
+        assert_eq!(node_less.token.token_type, TokenType::LESS);
 
         let node_less_equal = parser.parse_operator().unwrap();
-        assert_eq!(node_less_equal.Type, NodeType::Operator);
+        assert_eq!(node_less_equal.node_type, NodeType::Operator);
         assert_eq!(node_less_equal.children.len(), 0);
-        assert_eq!(node_less_equal.token.Type, TokenType::LessEqual);
+        assert_eq!(node_less_equal.token.token_type, TokenType::LessEqual);
 
         let node_greater_equal = parser.parse_operator().unwrap();
-        assert_eq!(node_greater_equal.Type, NodeType::Operator);
+        assert_eq!(node_greater_equal.node_type, NodeType::Operator);
         assert_eq!(node_greater_equal.children.len(), 0);
-        assert_eq!(node_greater_equal.token.Type, TokenType::GreaterEqual);
+        assert_eq!(node_greater_equal.token.token_type, TokenType::GreaterEqual);
 
         let node_greater = parser.parse_operator().unwrap();
-        assert_eq!(node_greater.Type, NodeType::Operator);
+        assert_eq!(node_greater.node_type, NodeType::Operator);
         assert_eq!(node_greater.children.len(), 0);
-        assert_eq!(node_greater.token.Type, TokenType::GREATER);
+        assert_eq!(node_greater.token.token_type, TokenType::GREATER);
 
         let node_plus = parser.parse_operator().unwrap();
-        assert_eq!(node_plus.Type, NodeType::Operator);
+        assert_eq!(node_plus.node_type, NodeType::Operator);
         assert_eq!(node_plus.children.len(), 0);
-        assert_eq!(node_plus.token.Type, TokenType::Plus);
+        assert_eq!(node_plus.token.token_type, TokenType::Plus);
 
         let node_minus = parser.parse_operator().unwrap();
-        assert_eq!(node_minus.Type, NodeType::Operator);
+        assert_eq!(node_minus.node_type, NodeType::Operator);
         assert_eq!(node_minus.children.len(), 0);
-        assert_eq!(node_minus.token.Type, TokenType::Minus);
+        assert_eq!(node_minus.token.token_type, TokenType::Minus);
 
         let node_star = parser.parse_operator().unwrap();
-        assert_eq!(node_star.Type, NodeType::Operator);
+        assert_eq!(node_star.node_type, NodeType::Operator);
         assert_eq!(node_star.children.len(), 0);
-        assert_eq!(node_star.token.Type, TokenType::STAR);
+        assert_eq!(node_star.token.token_type, TokenType::STAR);
 
         let node_slash = parser.parse_operator().unwrap();
-        assert_eq!(node_slash.Type, NodeType::Operator);
+        assert_eq!(node_slash.node_type, NodeType::Operator);
         assert_eq!(node_slash.children.len(), 0);
-        assert_eq!(node_slash.token.Type, TokenType::SLASH);
+        assert_eq!(node_slash.token.token_type, TokenType::SLASH);
 
         Ok(())
     }

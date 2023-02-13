@@ -15,9 +15,9 @@ pub enum NodeType {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Node {
-    node_type: NodeType,
-    children: Vec<Rc<Node>>,
-    token: token::Token,
+    pub(crate) node_type: NodeType,
+    pub(crate) children: Vec<Rc<Node>>,
+    pub(crate) token: token::Token,
 }
 
 impl Node {
