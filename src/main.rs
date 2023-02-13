@@ -19,6 +19,7 @@ fn run(source: &String) -> Result<(), RunError> {
     let mut parser = parser::Parser::new(&tokens);
 
     let program = parser.parse();
+    program.print();
 
     Ok(())
 }
@@ -42,6 +43,7 @@ fn run_prompt() {
 }
 
 fn main() {
+    env::set_var("RUST_BACKTRACE", "1");
     let args: Vec<String> = env::args().collect();
 
     if args.len() > 2 {

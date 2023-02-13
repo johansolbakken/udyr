@@ -80,6 +80,12 @@ impl Scanner {
             self.start = self.current;
             self.scan_token();
         }
+        self.tokens.push(Token::new(
+            TokenType::EOF,
+            &String::from("\0"),
+            &String::from("\0"),
+            self.line,
+        ));
         Ok(self.tokens.clone())
     }
 

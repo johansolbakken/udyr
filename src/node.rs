@@ -35,4 +35,20 @@ impl Node {
 
         return node;
     }
+
+    pub fn print(&self) {
+        self.print_aux(0);
+    }
+
+    fn print_aux(&self, indent: usize) {
+        println!(
+            "{}{:?} {:?}",
+            " ".repeat(indent),
+            self.node_type,
+            self.token
+        );
+        for child in &self.children {
+            child.print_aux(indent + 2);
+        }
+    }
 }
