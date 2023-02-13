@@ -2,11 +2,10 @@ use std::env;
 use std::io;
 use std::io::Write;
 
-use token::Token;
-use token::TokenType;
 mod error;
 mod scanner;
 mod token;
+mod parser;
 
 #[derive(Debug, Clone)]
 struct RunError {

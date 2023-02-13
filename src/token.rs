@@ -47,6 +47,7 @@ pub enum TokenType {
     WHILE,
 
     EOF,
+    None,
 }
 
 #[derive(Clone, Debug)]
@@ -65,5 +66,14 @@ impl Token {
             literal: literal.clone(),
             line,
         };
+    }
+
+    pub fn empty() -> Token {
+        Token {
+            Type: TokenType::None,
+            lexeme: String::from(""),
+            literal: String::from(""),
+            line: 0,
+        }
     }
 }
