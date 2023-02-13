@@ -174,14 +174,14 @@ impl Scanner {
         return c;
     }
 
-    fn add_empty_token(&mut self, Type: TokenType) {
-        self.add_token(Type, &String::new());
+    fn add_empty_token(&mut self, token_type: TokenType) {
+        self.add_token(token_type, &String::new());
     }
 
-    fn add_token(&mut self, Type: TokenType, literal: &String) {
+    fn add_token(&mut self, token_type: TokenType, literal: &String) {
         let text = String::from(&self.source[self.start..self.current]);
         self.tokens
-            .push(Token::new(Type, &text, &literal, self.line))
+            .push(Token::new(token_type, &text, &literal, self.line))
     }
 
     fn match_next(&self, expected: char) -> bool {
@@ -249,12 +249,12 @@ impl Scanner {
         }
 
         let text = String::from(&self.source[self.start..self.current]);
-        let mut Type = TokenType::IDENTIFIER;
+        let mut token_type = TokenType::IDENTIFIER;
         if self.keywords.contains_key(&text) {
-            Type = self.keywords.get(&text).unwrap().clone();
+            token_type = self.keywords.get(&text).unwrap().clone();
         }
 
-        self.add_empty_token(Type);
+        self.add_empty_token(token_type);
     }
 }
 
