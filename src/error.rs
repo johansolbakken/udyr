@@ -1,5 +1,3 @@
-use std::fmt::format;
-
 pub fn error(line: usize, message: &str) -> String {
     report(line, "", message)
 }
