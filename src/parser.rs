@@ -188,7 +188,7 @@ impl Parser {
                 node.token = self.current_token();
                 return Ok(Rc::new(node));
             }
-            _ => {}
+            _ => { /* Do nothing */ }
         }
         match self.current_token().lexeme.as_str() {
             "true" | "false" | "nil" => {
@@ -259,6 +259,84 @@ mod tests {
         assert_eq!(node.Type, NodeType::Literal);
         assert_eq!(node.children.len(), 0);
         assert_eq!(node.token.Type, TokenType::STRING);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_operators() -> Result<(), String> {
+        /*match self.current_token().Type {
+            TokenType::EqualEqual
+            | TokenType::BangEqual
+            | TokenType::LESS
+            | TokenType::LessEqual
+            | TokenType::GreaterEqual
+            | TokenType::GREATER
+            | TokenType::Plus
+            | TokenType::Minus
+            | TokenType::STAR
+            | TokenType::SLASH => {
+                let mut node = Node::new(NodeType::Operator, &[]);
+                node.token = self.current_token();
+                self.advance();
+                return Ok(Rc::new(node));
+            }
+            _ => Err(String::from("")),
+        }*/
+
+        let mut scanner = scanner::Scanner::new(&String::from("== != < <= >= > + - * /"));
+        let tokens = scanner.scan_tokens().unwrap();
+        let mut parser = Parser::new(&tokens);
+
+        let node_equal_equal = parser.parse_operator().unwrap();
+        assert_eq!(node_equal_equal.Type, NodeType::Operator);
+        assert_eq!(node_equal_equal.children.len(), 0);
+        assert_eq!(node_equal_equal.token.Type, TokenType::EqualEqual);
+
+        let node_bang_equal = parser.parse_operator().unwrap();
+        assert_eq!(node_bang_equal.Type, NodeType::Operator);
+        assert_eq!(node_bang_equal.children.len(), 0);
+        assert_eq!(node_bang_equal.token.Type, TokenType::BangEqual);
+
+        let node_less = parser.parse_operator().unwrap();
+        assert_eq!(node_less.Type, NodeType::Operator);
+        assert_eq!(node_less.children.len(), 0);
+        assert_eq!(node_less.token.Type, TokenType::LESS);
+
+        let node_less_equal = parser.parse_operator().unwrap();
+        assert_eq!(node_less_equal.Type, NodeType::Operator);
+        assert_eq!(node_less_equal.children.len(), 0);
+        assert_eq!(node_less_equal.token.Type, TokenType::LessEqual);
+
+        let node_greater_equal = parser.parse_operator().unwrap();
+        assert_eq!(node_greater_equal.Type, NodeType::Operator);
+        assert_eq!(node_greater_equal.children.len(), 0);
+        assert_eq!(node_greater_equal.token.Type, TokenType::GreaterEqual);
+
+        let node_greater = parser.parse_operator().unwrap();
+        assert_eq!(node_greater.Type, NodeType::Operator);
+        assert_eq!(node_greater.children.len(), 0);
+        assert_eq!(node_greater.token.Type, TokenType::GREATER);
+
+        let node_plus = parser.parse_operator().unwrap();
+        assert_eq!(node_plus.Type, NodeType::Operator);
+        assert_eq!(node_plus.children.len(), 0);
+        assert_eq!(node_plus.token.Type, TokenType::Plus);
+
+        let node_minus = parser.parse_operator().unwrap();
+        assert_eq!(node_minus.Type, NodeType::Operator);
+        assert_eq!(node_minus.children.len(), 0);
+        assert_eq!(node_minus.token.Type, TokenType::Minus);
+
+        let node_star = parser.parse_operator().unwrap();
+        assert_eq!(node_star.Type, NodeType::Operator);
+        assert_eq!(node_star.children.len(), 0);
+        assert_eq!(node_star.token.Type, TokenType::STAR);
+
+        let node_slash = parser.parse_operator().unwrap();
+        assert_eq!(node_slash.Type, NodeType::Operator);
+        assert_eq!(node_slash.children.len(), 0);
+        assert_eq!(node_slash.token.Type, TokenType::SLASH);
 
         Ok(())
     }
