@@ -303,7 +303,7 @@ mod tests {
     }
 
     #[test]
-    fn test_unary() -> Result<(), String> {
+    fn test_unary_minus() -> Result<(), String> {
         let mut scanner = scanner::Scanner::new(&String::from("-5"));
         let tokens = scanner.scan_tokens().unwrap();
 
@@ -312,6 +312,45 @@ mod tests {
         let node_minus = parser.parse_unary().unwrap();
         assert_eq!(node_minus.node_type, NodeType::Unary);
         assert_eq!(node_minus.token.token_type, TokenType::Minus);
+        assert_eq!(node_minus.children.len(), 1);
+        assert_eq!(node_minus.children[0].node_type, NodeType::Expression);
+        assert_eq!(node_minus.children[0].children.len(), 1);
+        assert_eq!(
+            node_minus.children[0].children[0].node_type,
+            NodeType::Literal
+        );
+        assert_eq!(
+            node_minus.children[0].children[0].token.token_type,
+            TokenType::NUMBER
+        );
+        assert_eq!(
+            node_minus.children[0].children[0].token.lexeme.as_str(),
+            "5"
+        );
+
+        Ok(())
+    }
+    #[test]
+    fn test_unary_bang() -> Result<(), String> {
+        let mut scanner = scanner::Scanner::new(&String::from("!true"));
+        let tokens = scanner.scan_tokens().unwrap();
+
+        let mut parser = Parser::new(&tokens);
+
+        let node_minus = parser.parse_unary().unwrap();
+        assert_eq!(node_minus.node_type, NodeType::Unary);
+        assert_eq!(node_minus.token.token_type, TokenType::BANG);
+        assert_eq!(node_minus.children.len(), 1);
+        assert_eq!(node_minus.children[0].node_type, NodeType::Expression);
+        assert_eq!(node_minus.children[0].children.len(), 1);
+        assert_eq!(
+            node_minus.children[0].children[0].node_type,
+            NodeType::Literal
+        );
+        assert_eq!(
+            node_minus.children[0].children[0].token.token_type,
+            TokenType::TRUE
+        );
 
         Ok(())
     }
