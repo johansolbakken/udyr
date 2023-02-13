@@ -202,7 +202,7 @@ impl Scanner {
     }
 
     fn peek_next(&self) -> char {
-        if (self.current + 1 >= self.source.len()) {
+        if self.current + 1 >= self.source.len() {
             return '\0';
         }
         return self.source.chars().nth(self.current + 1).unwrap();
