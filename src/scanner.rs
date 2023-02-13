@@ -280,14 +280,14 @@ mod tests {
         let tokens = scanner.scan_tokens().unwrap();
 
         assert_eq!(tokens.len(), 8);
-        assert_eq!((&tokens[0]).Type, TokenType::STAR);
-        assert_eq!((&tokens[1]).Type, TokenType::Plus);
-        assert_eq!((&tokens[2]).Type, TokenType::RightBrace);
-        assert_eq!((&tokens[3]).Type, TokenType::LeftParen);
-        assert_eq!((&tokens[4]).Type, TokenType::Dot);
-        assert_eq!((&tokens[5]).Type, TokenType::Comma);
-        assert_eq!((&tokens[6]).Type, TokenType::Minus);
-        assert_eq!((&tokens[7]).Type, TokenType::SEMICOLON);
+        assert_eq!((&tokens[0]).token_type, TokenType::STAR);
+        assert_eq!((&tokens[1]).token_type, TokenType::Plus);
+        assert_eq!((&tokens[2]).token_type, TokenType::RightBrace);
+        assert_eq!((&tokens[3]).token_type, TokenType::LeftParen);
+        assert_eq!((&tokens[4]).token_type, TokenType::Dot);
+        assert_eq!((&tokens[5]).token_type, TokenType::Comma);
+        assert_eq!((&tokens[6]).token_type, TokenType::Minus);
+        assert_eq!((&tokens[7]).token_type, TokenType::SEMICOLON);
 
         Ok(())
     }
@@ -298,13 +298,13 @@ mod tests {
         let tokens = scanner.scan_tokens().unwrap();
 
         assert_eq!(tokens.len(), 7);
-        assert_eq!((&tokens[0]).Type, TokenType::LESS);
-        assert_eq!((&tokens[1]).Type, TokenType::Plus);
-        assert_eq!((&tokens[2]).Type, TokenType::LessEqual);
-        assert_eq!((&tokens[3]).Type, TokenType::Plus);
-        assert_eq!((&tokens[4]).Type, TokenType::BANG);
-        assert_eq!((&tokens[5]).Type, TokenType::Plus);
-        assert_eq!((&tokens[6]).Type, TokenType::EqualEqual);
+        assert_eq!((&tokens[0]).token_type, TokenType::LESS);
+        assert_eq!((&tokens[1]).token_type, TokenType::Plus);
+        assert_eq!((&tokens[2]).token_type, TokenType::LessEqual);
+        assert_eq!((&tokens[3]).token_type, TokenType::Plus);
+        assert_eq!((&tokens[4]).token_type, TokenType::BANG);
+        assert_eq!((&tokens[5]).token_type, TokenType::Plus);
+        assert_eq!((&tokens[6]).token_type, TokenType::EqualEqual);
 
         Ok(())
     }
@@ -348,7 +348,7 @@ mod tests {
         let tokens = scanner.scan_tokens().unwrap();
 
         assert_eq!(tokens.len(), 4);
-        assert_eq!((&tokens[1]).Type, TokenType::STRING);
+        assert_eq!((&tokens[1]).token_type, TokenType::STRING);
         assert_eq!((&tokens[1]).literal, "Hello");
         assert_eq!((&tokens[3]).literal, "Hello2");
 
@@ -362,7 +362,7 @@ mod tests {
 
         assert_eq!(tokens.len(), 3);
         assert_eq!((&tokens[0]).literal, "123");
-        assert_eq!((&tokens[1]).Type, TokenType::Plus);
+        assert_eq!((&tokens[1]).token_type, TokenType::Plus);
         assert_eq!((&tokens[2]).literal, "123.123");
 
         Ok(())
@@ -375,14 +375,14 @@ mod tests {
         let tokens = scanner.scan_tokens().unwrap();
 
         assert_eq!(tokens.len(), 7);
-        assert_eq!((&tokens[0]).Type, TokenType::VAR);
-        assert_eq!((&tokens[1]).Type, TokenType::Plus);
-        assert_eq!((&tokens[2]).Type, TokenType::IDENTIFIER);
+        assert_eq!((&tokens[0]).token_type, TokenType::VAR);
+        assert_eq!((&tokens[1]).token_type, TokenType::Plus);
+        assert_eq!((&tokens[2]).token_type, TokenType::IDENTIFIER);
         assert_eq!((&tokens[2]).lexeme, "myClass");
-        assert_eq!((&tokens[3]).Type, TokenType::Minus);
-        assert_eq!((&tokens[4]).Type, TokenType::CLASS);
-        assert_eq!((&tokens[5]).Type, TokenType::Plus);
-        assert_eq!((&tokens[6]).Type, TokenType::IDENTIFIER);
+        assert_eq!((&tokens[3]).token_type, TokenType::Minus);
+        assert_eq!((&tokens[4]).token_type, TokenType::CLASS);
+        assert_eq!((&tokens[5]).token_type, TokenType::Plus);
+        assert_eq!((&tokens[6]).token_type, TokenType::IDENTIFIER);
         assert_eq!((&tokens[6]).lexeme, "superFres");
 
         Ok(())

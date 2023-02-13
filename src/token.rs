@@ -50,18 +50,18 @@ pub enum TokenType {
     None,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Token {
-    pub(crate) Type: TokenType,
+    pub(crate) token_type: TokenType,
     pub(crate) lexeme: String,
     pub(crate) literal: String,
     pub(crate) line: usize,
 }
 
 impl Token {
-    pub fn new(Type: TokenType, lexeme: &String, literal: &String, line: usize) -> Token {
+    pub fn new(token_type: TokenType, lexeme: &String, literal: &String, line: usize) -> Token {
         return Token {
-            Type,
+            token_type,
             lexeme: lexeme.clone(),
             literal: literal.clone(),
             line,
@@ -70,7 +70,7 @@ impl Token {
 
     pub fn empty() -> Token {
         Token {
-            Type: TokenType::None,
+            token_type: TokenType::None,
             lexeme: String::from(""),
             literal: String::from(""),
             line: 0,

@@ -1,39 +1,6 @@
 use crate::token::{self, TokenType};
 use std::rc::Rc;
 
-#[derive(Debug, PartialEq, Clone)]
-pub enum NodeType {
-    Program,
-    Expression,
-    Binary,
-    Unary,
-    Grouping,
-    Operator,
-    Literal,
-}
-
-pub struct Node {
-    Type: NodeType,
-    children: Vec<Rc<Node>>,
-    token: token::Token,
-}
-
-impl Node {
-    pub fn new(Type: NodeType, children: &[Rc<Node>]) -> Node {
-        let mut node = Node {
-            Type,
-            children: Vec::new(),
-            token: token::Token::empty(),
-        };
-
-        for child in children {
-            node.children.push(child.clone())
-        }
-
-        return node;
-    }
-}
-
 pub struct Parser {
     tokens: Vec<token::Token>,
     current: usize,
@@ -88,7 +55,7 @@ impl Parser {
     }
 
     pub fn parse_grouping(&mut self) -> Result<Rc<Node>, String> {
-        if self.current_token().Type != TokenType::LeftParen {
+        if self.current_token().token_type != TokenType::LeftParen {
             return Err(String::from(""));
         }
 
@@ -139,8 +106,8 @@ impl Parser {
     }
 
     pub fn parse_unary(&mut self) -> Result<Rc<Node>, String> {
-        if !(self.current_token().Type == TokenType::BANG
-            || self.current_token().Type == TokenType::Minus)
+        if !(self.current_token().token_type == TokenType::BANG
+            || self.current_token().token_type == TokenType::Minus)
         {
             return Err(String::from(""));
         }
@@ -161,7 +128,7 @@ impl Parser {
     }
 
     pub fn parse_operator(&mut self) -> Result<Rc<Node>, String> {
-        match self.current_token().Type {
+        match self.current_token().token_type {
             TokenType::EqualEqual
             | TokenType::BangEqual
             | TokenType::LESS
@@ -182,7 +149,7 @@ impl Parser {
     }
 
     pub fn parse_literal(&mut self) -> Result<Rc<Node>, String> {
-        match self.current_token().Type {
+        match self.current_token().token_type {
             TokenType::NUMBER | TokenType::STRING => {
                 let mut node = Node::new(NodeType::Literal, &[]);
                 node.token = self.current_token();
@@ -265,25 +232,6 @@ mod tests {
 
     #[test]
     fn test_operators() -> Result<(), String> {
-        /*match self.current_token().Type {
-            TokenType::EqualEqual
-            | TokenType::BangEqual
-            | TokenType::LESS
-            | TokenType::LessEqual
-            | TokenType::GreaterEqual
-            | TokenType::GREATER
-            | TokenType::Plus
-            | TokenType::Minus
-            | TokenType::STAR
-            | TokenType::SLASH => {
-                let mut node = Node::new(NodeType::Operator, &[]);
-                node.token = self.current_token();
-                self.advance();
-                return Ok(Rc::new(node));
-            }
-            _ => Err(String::from("")),
-        }*/
-
         let mut scanner = scanner::Scanner::new(&String::from("== != < <= >= > + - * /"));
         let tokens = scanner.scan_tokens().unwrap();
         let mut parser = Parser::new(&tokens);
@@ -337,6 +285,18 @@ mod tests {
         assert_eq!(node_slash.Type, NodeType::Operator);
         assert_eq!(node_slash.children.len(), 0);
         assert_eq!(node_slash.token.Type, TokenType::SLASH);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_unary() -> Result<(), String> {
+        let mut scanner = scanner::Scanner::new(&String::from("-5"));
+        let tokens = scanner.scan_tokens().unwrap();
+
+        let mut parser = Parser::new(&tokens);
+
+        let node_minus = parser.parse_unary().unwrap();
 
         Ok(())
     }

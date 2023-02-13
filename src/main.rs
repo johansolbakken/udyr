@@ -6,6 +6,7 @@ mod error;
 mod scanner;
 mod token;
 mod parser;
+mod node;
 
 #[derive(Debug, Clone)]
 struct RunError {
